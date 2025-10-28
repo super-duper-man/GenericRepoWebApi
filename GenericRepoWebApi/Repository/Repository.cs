@@ -1,31 +1,48 @@
 ﻿
+using GenericRepoWebApi.Data;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+
 namespace GenericRepoWebApi.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        public Task AddAsync(T entity)
+        protected readonly DbSet<T> dbSet;
+        private readonly AppDbContext dbContext;
+        public Repository(AppDbContext dbContext)
         {
-            throw new NotImplementedException();
+            this.dbSet = dbContext.Set<T>();
+            this.dbContext = dbContext;
         }
 
-        public Task DeleteAsync(T entity)
+        public async Task<T> AddAsync(T entity)
         {
-            throw new NotImplementedException();
+            await dbSet.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
+            return entity;
         }
 
-        public Task<IEnumerable<T>> GetAllAsync()
+        public async Task DeleteAsync(T entity)
         {
-            throw new NotImplementedException();
+            dbSet.Remove(entity);
+            await dbContext.SaveChangesAsync();
         }
 
-        public Task<T> GetByIdAsync(int id)
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await dbSet.ToListAsync();
         }
 
-        public Task UpdateAsync(T entity)
+        public async Task<T> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await dbSet.FindAsync(id);
+        }
+
+        public async Task UpdateAsync(T entity)
+        {
+            dbSet.Attach(entity);
+            dbContext.Entry(entity).State = EntityState.Modified;
+            await dbContext.SaveChangesAsync();
         }
     }
 }
