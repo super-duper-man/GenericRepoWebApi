@@ -22,10 +22,12 @@ namespace GenericRepoWebApi.Repository
             return entity;
         }
 
-        public async Task DeleteAsync(T entity)
+        public async Task<T> DeleteAsync(T entity)
         {
             dbSet.Remove(entity);
             await dbContext.SaveChangesAsync();
+
+            return entity;
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -38,11 +40,13 @@ namespace GenericRepoWebApi.Repository
             return await dbSet.FindAsync(id);
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
             dbSet.Attach(entity);
             dbContext.Entry(entity).State = EntityState.Modified;
             await dbContext.SaveChangesAsync();
+
+            return entity;
         }
     }
 }
