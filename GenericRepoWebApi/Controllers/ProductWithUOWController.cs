@@ -58,14 +58,15 @@ namespace GenericRepoWebApi.Controllers
             }
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> UpdateProduct(ProductDto product)
-        //{
-        //}
-
-        //[HttpDelete("{productId}")]
-        //public async Task<IActionResult> DeleteProduct(int productId)
-        //{
-        //}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductById(int id)
+        {
+            var product = await _unitOfWork.productRepository.GetByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return Ok(product);
+        }
     }
 }

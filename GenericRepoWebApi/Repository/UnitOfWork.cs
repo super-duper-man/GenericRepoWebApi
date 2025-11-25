@@ -9,6 +9,7 @@ namespace GenericRepoWebApi.Repository
         private readonly AppDbContext appDbContext = _dbContext;
         private IDbContextTransaction _transaction;
         private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
+        public IProductRepository productRepository => new ProductRepository(appDbContext);
 
         public IRepository<T> GetRepository<T>() where T : class
         {
