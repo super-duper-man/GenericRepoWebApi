@@ -7,7 +7,7 @@ namespace GenericRepoWebApi.Repository
     public class UnitOfWork(AppDbContext _dbContext) : IUnitOfWork
     {
         private readonly AppDbContext appDbContext = _dbContext;
-        private IDbContextTransaction _transaction;
+        private IDbContextTransaction? _transaction;
         private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
         public IProductRepository productRepository => new ProductRepository(appDbContext);
 
