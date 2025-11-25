@@ -17,26 +17,27 @@ namespace GenericRepoWebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IResult> GetAllProducts()
+        public async Task<IActionResult> GetAllProducts()
         {
-            return Results.Ok(await _repository.GetAllAsync());
+            var products = await _repository.GetAllAsync();
+            return Ok(products ?? Enumerable.Empty<Product>());
         }
 
         [HttpGet("{id}")]
-        public async Task<IResult> GetProduct(int id)
+        public async Task<IActionResult> GetProduct(int id)
         {
             var product = await _repository.GetByIdAsync(id);
 
             if (product == null)
             {
-                return Results.NotFound();
+                return NotFound();
             }
 
-            return Results.Ok(product);
+            return Ok(product);
         }
 
         [HttpPost]
-        public async Task<IResult> CreateProduct([FromBody] ProductDto product)
+        public async Task<IActionResult> CreateProduct([FromBody] ProductDto product)
         {
             var productEntity = new Product(){
                 Name = product.Name,
@@ -45,16 +46,16 @@ namespace GenericRepoWebApi.Controllers
 
             await _repository.AddAsync(productEntity);
 
-            return Results.Created();
+            return Created();
         }
 
         [HttpPut("{id}")]
-        public async Task<IResult> UpdateProduct(int id, [FromBody] ProductDto product)
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductDto product)
         {
             var productEntity = await _repository.GetByIdAsync(id);
             if (productEntity == null)
             {
-                return Results.NotFound();
+                return NotFound();
             }
 
             productEntity.Price = product.Price;
@@ -62,22 +63,22 @@ namespace GenericRepoWebApi.Controllers
 
             await _repository.UpdateAsync(productEntity);
 
-            return Results.NoContent();
+            return NoContent();
         }
 
 
         [HttpDelete("{id}")]
-        public async Task<IResult> RemoveProduct(int id)
+        public async Task<IActionResult> RemoveProduct(int id)
         {
             var productEntity = await _repository.GetByIdAsync(id);
             if (productEntity == null)
             {
-                return Results.NotFound();
+                return NotFound();
             }
 
 
             await _repository.DeleteAsync(productEntity);
-            return Results.NoContent();
+            return NoContent();
         }
     }
 }
